@@ -20,22 +20,32 @@ Shared header, footer, mobile menu, sticky mobile CTA and lead-capture modal are
 
 ## Configuration (do this before go-live)
 
-All external links and integrations live in one object at the top of `assets/js/main.js` — `SITE_CONFIG`:
+All external links and integrations live in one object at the top of `assets/js/main.js` — `SITE_CONFIG`. Values taken from the live Exly page (https://coachingcentral.exlyapp.com/) are already filled in:
 
 ```js
-whatsapp: '',           // E.164 digits, e.g. '919876543210' → all "WhatsApp" buttons become wa.me links
+whatsapp: '918178501112',                                   // +91 81785 01112 → wa.me links everywhere
+instagram: 'https://www.instagram.com/coachingcentralorg/',
 formEndpoint: '',       // URL that receives lead POSTs (JSON). Empty = stored in localStorage + console only
 links: {
-  launchKit: '',        // Exly checkout URL — "Get the Launch Kit" buttons
-  toolkit: '',          // Exly checkout URL — "Get the Toolkit"
-  strategySession: '',  // Exly booking URL  — "Book a Strategy Session"
+  launchKit: '',        // Exly checkout URL — not listed on Exly yet
+  toolkit: '',          // Exly checkout URL — not listed on Exly yet
+  strategySession: '',  // Exly booking URL  — not listed on Exly yet
   support: '',          // Ongoing Support enquiry/booking URL
   implementation: '',   // Implementation enquiry URL
-  login: ''             // Exly member login — the Login link stays hidden until set
+  community: 'https://coachingcentral.exlyapp.com/f1cc3d14-…',   // Coaching Central Community, ₹199 lifetime
+  login: 'https://coachingcentral.exlyapp.com/eud/login/email'
 }
 ```
 
-Nothing is broken while these are empty: checkout/booking buttons open the interest form instead, WhatsApp buttons open the contact form, and "Explore …" links always go to the product pages.
+Nothing is broken while a value is empty: checkout/booking buttons open the interest form instead, and "Explore …" links always go to the product pages.
+
+### Taken from the live Exly site
+- About copy (verbatim), tagline *"You're Certified. Now What? Build the business around your coaching with practical tools, guidance and support."*
+- **What you get** — 1-on-1 Guidance · Practical Learning · Digital Toolkits · Recorded Sessions · Coaches Community (home, about)
+- **Live offerings** with prices and direct Exly booking links (`programs.html#live`): Coaching Central Community ₹199 lifetime · Parenting Mastery Workshop: 90-Min ₹49 (24 Sep 2026) · Understanding Child Psychology ₹4,999 (4 weeks). Update these when listings change.
+- **Brand collaborations** logos (`assets/img/partners/`): Olive & Lime Co., Indian Society for NLP, WisdomTree Solutions
+- Instagram + WhatsApp (brand glyphs in footer/contact), Login, Privacy Policy and Terms of Use links (Exly-hosted)
+- Not carried over: the three testimonials on Exly (Morgan Ellis / Taylor Morgan / Jordan Lee) look like Exly sample content (generic names, default and AI-generated avatars) and the brief asks for real coach stories — confirm before publishing.
 
 ### Lead capture
 Three forms share one handler (`CCLeads.submit`): the modal (free templates / product interest / contact), the assessment lead step, and the contact page. Each POSTs JSON to `formEndpoint` (fields: `source`, `name`, `email`, `whatsapp`, plus `interest`/`message` or the assessment answers and result). A `dataLayer.push({event:'lead_submit'})` fires for GTM.
@@ -50,7 +60,7 @@ Four questions → lead capture → mini-diagnosis. Answers persist in `sessionS
 - **Coach stories** — the BEFORE → JOURNEY → AFTER section on `about.html` is built but `hidden` until real stories are supplied. No testimonials were invented.
 - **Launch Kit price** — not in the brief; product page says "price shown at checkout".
 - **Premium mentorship (Sushil Mehrotra)** — listed as "coming later" on `programs.html`.
-- **Exly checkout / booking URLs, WhatsApp number, form endpoint, analytics (GTM) snippet, canonical domain** for the `og:` tags.
+- **Exly checkout / booking URLs for the Launch Kit, Toolkit and Strategy Session** (not listed on Exly yet), **form endpoint, analytics (GTM) snippet, canonical domain** for the `og:` tags.
 
 ## Design system
 `assets/css/styles.css` — tokens at the top (brand colours, fluid type scale, 8px spacing, radii, shadows, motion), then components (buttons, chips, cards, reveals), then page sections. Fonts: Manrope (headings) + Inter (body) via Google Fonts. Accent buttons use navy text on orange/teal for AA contrast.

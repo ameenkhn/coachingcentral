@@ -151,7 +151,7 @@ em { font-style: normal; }
   text-transform: uppercase;
   color: var(--teal-700);
 }
-.on-dark .eyebrow { color: var(--teal); }
+.on-dark .eyebrow, .cta-banner .eyebrow, .community-banner .eyebrow { color: var(--teal); }
 .on-dark .lead { color: var(--white-a80); }
 .on-dark .muted { color: var(--white-a60); }
 p + p { margin-top: 1em; }
@@ -1005,3 +1005,54 @@ body.is-locked { overflow: hidden; }
 .contact-card.is-success .form-success { display: block; }
 .quickstart--static { margin-top: calc(-1 * clamp(2rem, 5vw, 4rem)); }
 .page-hero--dark + .quickstart--static { margin-top: -3.5rem; }
+
+/* --------------------------------------------------------------------------
+   25. Live offerings, partners, what-you-get
+   -------------------------------------------------------------------------- */
+.offers { display: grid; gap: 1.25rem; }
+@media (min-width: 800px) { .offers { grid-template-columns: repeat(3, 1fr); } }
+.offer { display: grid; grid-template-rows: auto 1fr; background: #fff; border-radius: var(--r-xl); box-shadow: var(--shadow-sm); overflow: clip; transition: transform .3s var(--ease-expo), box-shadow .3s var(--ease); }
+.offer:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.offer__media { position: relative; aspect-ratio: 16 / 9; background: var(--navy); }
+.offer__media img { width: 100%; height: 100%; object-fit: cover; }
+.offer__media .chip { position: absolute; top: .875rem; left: .875rem; }
+.offer__body { display: grid; gap: .625rem; align-content: start; padding: 1.5rem; }
+.offer__title { font-family: var(--font-head); font-weight: 800; font-size: 1.25rem; letter-spacing: -.02em; line-height: 1.2; }
+.offer__meta { font-size: var(--fs-xs); color: var(--slate); display: flex; flex-wrap: wrap; gap: .35rem .75rem; }
+.offer__desc { font-size: var(--fs-small); color: var(--slate-700); }
+.offer__foot { display: flex; align-items: center; justify-content: space-between; gap: .75rem; flex-wrap: wrap; margin-top: .5rem; }
+.offer__foot .price { font-size: 1.25rem; }
+
+.partners { display: grid; gap: 1rem; align-items: center; }
+.partners__title { font-family: var(--font-head); font-weight: 700; font-size: var(--fs-xs); letter-spacing: .12em; text-transform: uppercase; color: var(--slate); }
+.partners__list { display: flex; flex-wrap: wrap; gap: .75rem; }
+.partner { display: flex; align-items: center; gap: .875rem; padding: .75rem 1.125rem .75rem .75rem; background: #fff; border-radius: var(--r-md); box-shadow: var(--shadow-sm); }
+.partner img { width: 3rem; height: 3rem; object-fit: contain; }
+.partner span { font-family: var(--font-head); font-weight: 700; font-size: var(--fs-small); color: var(--ink-2); letter-spacing: -.01em; }
+.on-dark .partner { background: var(--white-a10); box-shadow: none; border: 1px solid var(--white-a10); }
+.on-dark .partner span { color: #fff; }
+.on-dark .partners__title { color: var(--white-a60); }
+
+.community-banner { display: grid; gap: 1.5rem; align-items: center; padding: clamp(1.5rem, 3vw, 2.5rem); background: var(--navy); color: #fff; border-radius: var(--r-xl); overflow: clip; position: relative; }
+@media (min-width: 900px) { .community-banner { grid-template-columns: 1fr auto; gap: 2.5rem; } }
+.community-banner__title { font-family: var(--font-head); font-weight: 800; font-size: clamp(1.375rem, 1.1rem + 1.2vw, 1.875rem); letter-spacing: -.025em; line-height: 1.15; color: #fff; }
+.community-banner__text { color: var(--white-a80); font-size: var(--fs-small); max-width: 40rem; }
+.community-banner .price { color: #fff; }
+.community-banner .price small { color: var(--white-a60); }
+.community-banner__cta { display: grid; gap: .75rem; justify-items: start; }
+@media (min-width: 900px) { .community-banner__cta { justify-items: end; text-align: right; } }
+
+/* Brand glyphs (WhatsApp / Instagram) */
+.brand { width: 1.25rem; height: 1.25rem; fill: currentColor; flex: none; }
+.brand--wa { color: #25D366; }
+.brand--ig { color: #E1306C; }
+.footer__contact { display: inline-flex; align-items: center; gap: .6rem; }
+.social-row { display: flex; gap: .625rem; margin-top: .25rem; }
+.social-btn { display: inline-grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: .875rem; background: var(--white-a10); color: #fff; border: 1px solid var(--white-a10); transition: background-color .25s var(--ease), transform .25s var(--ease-expo), border-color .25s var(--ease); }
+.social-btn .brand { width: 1.35rem; height: 1.35rem; }
+.social-btn:hover { transform: translateY(-2px); }
+.social-btn--ig:hover { background: #E1306C; border-color: #E1306C; }
+.social-btn--wa:hover { background: #25D366; border-color: #25D366; color: var(--navy); }
+.contact-way__icon--wa { background: #E9FBEF; color: #1DAA52; }
+.contact-way__icon--ig { background: #FDECF2; color: #E1306C; }
+.contact-way__icon .brand { width: 1.4rem; height: 1.4rem; }

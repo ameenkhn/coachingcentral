@@ -15,15 +15,17 @@
        · empty login         → Login links stay hidden
      ------------------------------------------------------------------------ */
   var SITE_CONFIG = window.SITE_CONFIG = {
-    whatsapp: '',                 // E.164 digits only, e.g. '919876543210'
+    whatsapp: '918178501112',     // From coachingcentral.exlyapp.com (+91 81785 01112)
+    instagram: 'https://www.instagram.com/coachingcentralorg/',
     formEndpoint: '',             // POST target for lead forms (Exly / webhook / Formspree…)
     links: {
-      launchKit: '',              // Exly checkout URL — Coaching Business Launch Kit
-      toolkit: '',                // Exly checkout URL — Goal-Setting Master Toolkit
-      strategySession: '',        // Exly booking URL — 1:1 Business Strategy Session
+      launchKit: '',              // Exly checkout URL — Coaching Business Launch Kit (not listed on Exly yet)
+      toolkit: '',                // Exly checkout URL — Goal-Setting Master Toolkit (not listed on Exly yet)
+      strategySession: '',        // Exly booking URL — 1:1 Business Strategy Session (not listed on Exly yet)
       support: '',                // Ongoing Support enquiry / booking URL
       implementation: '',         // Implementation Services enquiry URL
-      login: ''                   // Exly member login URL
+      community: 'https://coachingcentral.exlyapp.com/f1cc3d14-f7c8-4c85-b5f1-fa5ae5567b79',   // Coaching Central Community — ₹199 lifetime
+      login: 'https://coachingcentral.exlyapp.com/eud/login/email'
     }
   };
 
@@ -32,7 +34,8 @@
     toolkit: 'Goal-Setting Master Toolkit',
     strategySession: '1:1 Business Strategy Session',
     support: 'Ongoing Support',
-    implementation: 'Implementation Services'
+    implementation: 'Implementation Services',
+    community: 'Coaching Central Community'
   };
   // Where "Explore …" links go when no checkout URL is configured
   var PRODUCT_PAGES = {
@@ -40,7 +43,8 @@
     toolkit: 'goal-setting-toolkit.html',
     strategySession: 'strategy-session.html',
     support: 'programs.html#ongoing-support',
-    implementation: 'support.html'
+    implementation: 'support.html',
+    community: 'programs.html#community'
   };
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -392,8 +396,8 @@
 
   $$('[data-config-link]').forEach(function (a) {
     var key = a.getAttribute('data-config-link');
-    var url = SITE_CONFIG.links[key];
-    if (url) { a.href = url; a.hidden = false; }
+    var url = SITE_CONFIG.links[key] || SITE_CONFIG[key];
+    if (url) { a.href = url; a.hidden = false; if (/^https?:/.test(url)) { a.target = '_blank'; a.rel = 'noopener'; } }
   });
 
   /* ------------------------------------------------------------------------
