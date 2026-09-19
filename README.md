@@ -5,18 +5,26 @@ Open `index.html` directly or serve the folder with any static server.
 
 ## Pages
 
+Structure: **Home → categories → products.** The homepage is a hub; each category page lists what's inside it; products have their own pages.
+
 | File | Purpose |
 | --- | --- |
-| `index.html` | Home — the "You know how to coach. But what comes next?" story: hero → questions → realisation → BUILD · ATTRACT · GROW → pathways → levels of help → free templates → next-step assessment → experience → support → toolkit → final CTA |
-| `about.html` | The experience behind Coaching Central, people, what we believe (+ hidden coach-stories section) |
-| `start-here.html` | Pathways ("What do you need right now?") + the next-step assessment |
-| `coaching-kits.html` | Kits overview + free starter templates |
-| `programs.html` | Levels of involvement, Strategy Session, Ongoing Support, Implementation, Premium Mentorship (coming later) |
+| `index.html` | Home — hero + quick-start → the questions → realisation + Build · Attract · Grow strip → **category grid** → Community × Exly → final CTA |
+| `start-here.html` | Pathways ("What do you need right now?") + the next-step assessment (the header/hero CTAs and the homepage quick-start cards land here) |
+| `about.html` | The experience behind Coaching Central, the interactive **Build · Attract · Grow** method (`#method`), people, what you get, what we believe (+ hidden coach-stories section) |
+| **Categories** | |
+| `coaching-kits.html` | Kits overview + free starter templates + member-prices banner → `launch-kit.html`, `goal-setting-toolkit.html` |
+| `programs.html` | Levels of involvement, Strategy Session, Ongoing Support, Implementation, Premium Mentorship (coming later) → `strategy-session.html` |
 | `support.html` | Support & Implementation — how it works, six capability areas |
-| `launch-kit.html` · `goal-setting-toolkit.html` · `strategy-session.html` | Product pages |
+| `community.html` | Coaching Central Community (₹199 lifetime): what's inside, **member-exclusive prices** table (`#member-prices`), how to join, Exly teaser |
+| `workshops.html` | Workshops & Classes — the live Exly listings (moved here from Programs) + how booking works |
+| `exly.html` | **Coaching Central × Exly** — why Exly, what the partnership means, the community-member Exly offer (`#offer`) |
+| **Products** | `launch-kit.html` · `goal-setting-toolkit.html` · `strategy-session.html` (each buy panel shows the member price line) |
 | `contact.html` | Contact form + WhatsApp |
 
-Shared header, footer, mobile menu, sticky mobile CTA and lead-capture modal are the same markup on every page — when you change one, change all ten (search for `<header class="header"` / `<footer class="footer"` / `id="modal"`).
+Desktop nav (≥1200px): About · Start Here · Coaching Kits · Programs · Support · Community · Workshops. The mobile menu and footer also list Coaching Central × Exly and Contact.
+
+Shared header, footer, mobile menu, sticky mobile CTA and lead-capture modal are the same markup on every page — when you change one, change all thirteen (search for `<header class="header"` / `<footer class="footer"` / `id="modal"`).
 
 ## Configuration (do this before go-live)
 
@@ -33,16 +41,25 @@ links: {
   support: '',          // Ongoing Support enquiry/booking URL
   implementation: '',   // Implementation enquiry URL
   community: 'https://coachingcentral.exlyapp.com/f1cc3d14-…',   // Coaching Central Community, ₹199 lifetime
+  exlyOffer: '',        // Coaching Central × Exly — partner sign-up / offer URL for community members
   login: 'https://coachingcentral.exlyapp.com/eud/login/email'
-}
+},
+memberPrices: {         // Member-exclusive prices — shown wherever <span data-member-price="key"> appears
+  launchKit: '', toolkit: '', strategySession: '', support: '', workshops: '',
+  exly: ''              // the Coaching Central × Exly offer, e.g. '3 months free'
+},
+memberPriceFallback: 'Member price shared inside the community'
 ```
+
+While a member price is empty the site shows the fallback (or the element's own `data-member-fallback`) instead of a number — nothing is invented. Fill `memberPrices` and the values appear on `community.html#member-prices`, `workshops.html`, the product buy panels and `exly.html#offer`.
 
 Nothing is broken while a value is empty: checkout/booking buttons open the interest form instead, and "Explore …" links always go to the product pages.
 
 ### Taken from the live Exly site
 - About copy (verbatim), tagline *"You're Certified. Now What? Build the business around your coaching with practical tools, guidance and support."*
 - **What you get** — 1-on-1 Guidance · Practical Learning · Digital Toolkits · Recorded Sessions · Coaches Community (home, about)
-- **Live offerings** with prices and direct Exly booking links (`programs.html#live`): Coaching Central Community ₹199 lifetime · Parenting Mastery Workshop: 90-Min ₹49 (24 Sep 2026) · Understanding Child Psychology ₹4,999 (4 weeks). Update these when listings change.
+- **Live offerings** with prices and direct Exly booking links (`workshops.html`): Parenting Mastery Workshop: 90-Min ₹49 (24 Sep 2026) · Understanding Child Psychology ₹4,999 (4 weeks). Coaching Central Community ₹199 lifetime (`community.html`). Update these when listings change.
+- **Exly wordmark** (`assets/img/partners/exly.svg`, also inline as `#b-exly`) from exlyapp.com; the Exly feature list on `exly.html` is what exlyapp.com lists (courses, live workshops/webinars, no-code website, brand-labelled app, inbuilt CRM, UPI/cards/net banking/wallets, invoicing, offers & promo codes, SEO).
 - **Brand collaborations** logos (`assets/img/partners/`): Olive & Lime Co., Indian Society for NLP, WisdomTree Solutions
 - Instagram + WhatsApp (brand glyphs in footer/contact), Login, Privacy Policy and Terms of Use links (Exly-hosted)
 - Not carried over: the three testimonials on Exly (Morgan Ellis / Taylor Morgan / Jordan Lee) look like Exly sample content (generic names, default and AI-generated avatars) and the brief asks for real coach stories — confirm before publishing.
@@ -60,6 +77,9 @@ Four questions → lead capture → mini-diagnosis. Answers persist in `sessionS
 - **Coach stories** — the BEFORE → JOURNEY → AFTER section on `about.html` is built but `hidden` until real stories are supplied. No testimonials were invented.
 - **Launch Kit price** — not in the brief; product page says "price shown at checkout".
 - **Premium mentorship (Sushil Mehrotra)** — listed as "coming later" on `programs.html`.
+- **Member-exclusive prices** — the actual member prices for the kits, Strategy Session, support and workshops (`SITE_CONFIG.memberPrices`). Until they're set, every member-price slot reads "Member price shared inside the community".
+- **Coaching Central × Exly offer** — the offer itself (e.g. months free / discount), any terms, and the partner sign-up URL (`SITE_CONFIG.links.exlyOffer`). Until set, "Get Exly with Coaching Central" opens the interest form with "Exly partner offer" preselected.
+- **Workshops** — the third card on `workshops.html` ("Business sessions for coaches · Coming up") is a placeholder for the business-side sessions Exly's "Practical Learning" blurb describes; replace it with a real listing or remove it.
 - **Exly checkout / booking URLs for the Launch Kit, Toolkit and Strategy Session** (not listed on Exly yet), **form endpoint, analytics (GTM) snippet, canonical domain** for the `og:` tags.
 
 ## Design system

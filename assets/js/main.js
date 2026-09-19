@@ -25,8 +25,21 @@
       support: '',                // Ongoing Support enquiry / booking URL
       implementation: '',         // Implementation Services enquiry URL
       community: 'https://coachingcentral.exlyapp.com/f1cc3d14-f7c8-4c85-b5f1-fa5ae5567b79',   // Coaching Central Community — ₹199 lifetime
+      exlyOffer: '',              // Coaching Central × Exly — partner sign-up / offer URL for community members
       login: 'https://coachingcentral.exlyapp.com/eud/login/email'
-    }
+    },
+    // Member-exclusive prices (Coaching Central Community). Shown wherever <span data-member-price="key">
+    // appears (community.html, workshops.html, product pages). Leave a value empty and the site shows
+    // "Member price shared inside the community" instead of inventing a number.
+    memberPrices: {
+      launchKit: '',              // e.g. '₹399'
+      toolkit: '',                // e.g. '₹399'
+      strategySession: '',        // e.g. 'From ₹1,200'
+      support: '',                // e.g. 'Member rate'
+      workshops: '',              // e.g. '20% off every workshop'
+      exly: ''                    // e.g. '3 months free on Exly' — the Coaching Central × Exly offer
+    },
+    memberPriceFallback: 'Member price shared inside the community'
   };
 
   var PRODUCT_NAMES = {
@@ -35,7 +48,8 @@
     strategySession: '1:1 Business Strategy Session',
     support: 'Ongoing Support',
     implementation: 'Implementation Services',
-    community: 'Coaching Central Community'
+    community: 'Coaching Central Community',
+    exlyOffer: 'Exly partner offer'
   };
   // Where "Explore …" links go when no checkout URL is configured
   var PRODUCT_PAGES = {
@@ -44,7 +58,8 @@
     strategySession: 'strategy-session.html',
     support: 'programs.html#ongoing-support',
     implementation: 'support.html',
-    community: 'programs.html#community'
+    community: 'community.html',
+    exlyOffer: 'exly.html'
   };
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -392,6 +407,13 @@
       a.href = '#contact';
       a.addEventListener('click', function (e) { e.preventDefault(); openModal('contact'); });
     }
+  });
+
+  // Member-exclusive prices (community) — filled from SITE_CONFIG.memberPrices
+  $$('[data-member-price]').forEach(function (el) {
+    var v = (SITE_CONFIG.memberPrices || {})[el.getAttribute('data-member-price')];
+    el.textContent = v || el.getAttribute('data-member-fallback') || SITE_CONFIG.memberPriceFallback;
+    el.classList.toggle('is-tba', !v);
   });
 
   $$('[data-config-link]').forEach(function (a) {

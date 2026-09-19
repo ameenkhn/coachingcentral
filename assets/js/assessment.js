@@ -10,10 +10,22 @@
   var $ = function (s, c) { return (c || document).querySelector(s); };
   var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
   var viewport = $('#quizViewport');
-  if (!viewport) return;
+  var STORE_KEY = 'cc_assessment';
+
+  if (!viewport) {
+    // Pages without the quiz (e.g. the homepage): quick-start cards remember Q1 and
+    // continue on start-here.html#next-step, which resumes at Q2.
+    $$('[data-preselect-stage]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var stage = Number(btn.getAttribute('data-preselect-stage'));
+        try { sessionStorage.setItem(STORE_KEY, JSON.stringify({ answers: { stage: stage } })); } catch (e) { /* ignore */ }
+        if (window.dataLayer) window.dataLayer.push({ event: 'assessment_quickstart', stage: stage });
+      });
+    });
+    return;
+  }
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var STORE_KEY = 'cc_assessment';
 
   /* ------------------------------------------------------------------------
      Questions (copy from the brief)
