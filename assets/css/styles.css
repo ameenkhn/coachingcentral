@@ -1387,3 +1387,42 @@ body.is-locked .sticky-cta { transform: translateY(110%); pointer-events: none; 
   .community-banner__list { flex-direction: column; gap: .5rem; }
   .community-banner__list li + li::before { display: none; }
 }
+
+/* --------------------------------------------------------------------------
+   29. "Find Your Next Step" — hosted experience in an iframe
+   -------------------------------------------------------------------------- */
+.modal--assess.is-frame .modal__dialog {
+  width: min(100%, 64rem);
+  height: min(calc(100dvh - 2rem), 52rem);
+  padding: 0; gap: 0; overflow: hidden;
+  display: grid; grid-template-rows: 1fr;
+}
+.frame { display: grid; grid-template-rows: auto 1fr; min-height: 0; }
+.frame__head {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: 1rem 4.5rem 1rem 1.5rem;
+  border-bottom: 1px solid var(--gray-200);
+  background: #fff;
+}
+.frame__title { font-family: var(--font-head); font-weight: 800; font-size: 1.125rem; letter-spacing: -.015em; white-space: nowrap; }
+.frame__link { display: inline-flex; align-items: center; gap: .45rem; font-family: var(--font-head); font-weight: 700; font-size: var(--fs-small); color: var(--teal-700); white-space: nowrap; }
+.frame__link .ico { width: 1rem; height: 1rem; }
+.frame__link:hover { color: var(--teal-600); text-decoration: underline; }
+.frame__body { position: relative; min-height: 0; background: var(--gray-50); }
+.frame__iframe { display: block; width: 100%; height: 100%; border: 0; background: #fff; }
+.frame__status { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: .875rem; padding: 2rem; text-align: center; background: var(--gray-50); }
+.frame__spinner { width: 2.25rem; height: 2.25rem; border-radius: 50%; border: 3px solid var(--gray-200); border-top-color: var(--teal); animation: spin .9s linear infinite; }
+.frame__status.is-slow .frame__spinner { display: none; }
+.frame__status-text { font-size: var(--fs-small); color: var(--slate); max-width: 24rem; }
+@media (prefers-reduced-motion: reduce) { .frame__spinner { animation: none; } }
+@media (max-width: 640px) {
+  .modal--assess.is-frame .modal__dialog { width: 100%; height: calc(100dvh - 1rem); border-radius: var(--r-lg); }
+  .frame__head { padding: .875rem 3.5rem .875rem 1.125rem; }
+  .frame__title { font-size: 1rem; }
+  .frame__link { font-size: var(--fs-xs); }
+}
+@media (max-width: 480px) {
+  .frame__link-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .frame__link { width: 2.25rem; height: 2.25rem; justify-content: center; border-radius: 50%; background: var(--gray-100); }
+  .frame__link .ico { width: 1.1rem; height: 1.1rem; }
+}

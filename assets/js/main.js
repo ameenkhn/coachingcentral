@@ -19,6 +19,9 @@
     instagram: 'https://www.instagram.com/coachingcentralorg/',
     formEndpoint: '',             // POST target for lead forms (Exly / webhook / Formspree…)
     links: {
+      // "Find Your Next Step" — every [data-next-step] CTA opens this URL in the popup's iframe.
+      // Empty it to fall back to the built-in next-step check (assets/js/assessment.js).
+      nextStep: 'https://coachingcentral.exlyapp.com/?init_contact=true',
       launchKit: '',              // Exly checkout URL — Coaching Business Launch Kit (Phase 2: free starters + low-ticket kit)
       toolkit: '',                // Exly checkout URL — Goal-Setting Master Toolkit + 15-minute walkthrough (bundled)
       goalSession: '',            // Exly booking URL — personal Goal-Setting Session (optional paid add-on to the toolkit)
@@ -320,16 +323,53 @@
   window.CCModal = { open: openModal, close: closeModal };
   trapFocus(modal);
 
-  /* Assessment modal — the quiz itself is rendered by assessment.js */
+  /* "Find Your Next Step" modal — the hosted experience in an iframe, or the
+     built-in check (assessment.js) when SITE_CONFIG.links.nextStep is empty. */
   var assessModal = $('#assessModal');
+  var frameWrap = $('#nextStepFrame');
+  var frameEl = $('#nextStepIframe');
+  var frameStatus = $('#nextStepStatus');
+  var frameStatusText = $('#nextStepStatusText');
+  var frameNewTab = $('#nextStepNewTab');
+  var quizWrap = $('#quiz');
+  var NEXT_STEP_URL = SITE_CONFIG.links.nextStep || '';
+  var useFrame = !!(NEXT_STEP_URL && frameWrap && frameEl);
+  var frameStarted = false;
+  var frameTimer = null;
   var assessLastFocus = null;
+
+  // Load the hosted page once, on first open — never on page load.
+  function startFrame() {
+    if (frameStarted) return;
+    frameStarted = true;
+    frameEl.addEventListener('load', function () {
+      clearTimeout(frameTimer);
+      frameStatus.hidden = true;
+    });
+    // If it hasn't painted in 12s, point people at the new-tab link instead of a spinner.
+    frameTimer = setTimeout(function () {
+      frameStatus.classList.add('is-slow');
+      frameStatusText.textContent = 'This is taking longer than usual. You can open it in a new tab instead.';
+    }, 12000);
+    frameEl.src = NEXT_STEP_URL;
+  }
+
   function openAssess() {
     if (!assessModal) return;
     assessLastFocus = document.activeElement;
     if (menu.classList.contains('is-open')) setMenu(false);
+    if (useFrame) {
+      if (quizWrap) quizWrap.hidden = true;
+      frameWrap.hidden = false;
+      assessModal.classList.add('is-frame');
+      if (frameNewTab) frameNewTab.href = NEXT_STEP_URL;
+      startFrame();
+    } else if (quizWrap) {
+      quizWrap.hidden = false;
+      document.dispatchEvent(new CustomEvent('cc:assess-open'));
+    }
     showDialog(assessModal);
-    if (window.dataLayer) window.dataLayer.push({ event: 'assessment_open' });
-    document.dispatchEvent(new CustomEvent('cc:assess-open'));
+    if (window.dataLayer) window.dataLayer.push({ event: 'next_step_open', mode: useFrame ? 'hosted' : 'built-in' });
   }
   function closeAssess() {
     if (!assessModal) return;

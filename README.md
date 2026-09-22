@@ -21,12 +21,20 @@ Draft 2 implements the client's *Draft 2 Team Brief* / *Vibe Prompt* (22 Sep 202
 
 **Top navigation:** About · Coaching Kits · Services · Community · Learn & Grow · Login · Find Your Next Step →
 
-**Find Your Next Step** is a popup on every page. Any `<a href="#next-step" data-next-step>` opens it; opening a page with `#next-step` in the URL opens it automatically (usable in emails/ads).
+**Find Your Next Step** is a popup on every page. Any `<a href="#next-step" data-next-step>` opens it; opening a page with `#next-step` in the URL opens it automatically (usable in emails/ads). The popup loads Coaching Central's hosted Exly enquiry form in an iframe — see below.
 
 Shared header, mobile menu, footer, sticky mobile CTA, lead-capture modal and assessment modal are identical markup on every page. Search for `<header class="header"` / `<footer class="footer"` / `id="modal"` / `id="assessModal"` and change all eleven pages together (a one-off stamping script was used for Draft 2; not in the repo).
 
-### The assessment (`assets/js/assessment.js`)
-Four questions (where are you → biggest question → how clear are you → how much help) → one of **three broad need states**: *Get Clear*, *Get Moving*, *Get Growing*. The result shows in the same popup: a short read, **one recommended next action**, and the three routes (Do it yourself → Coaching Kits · Work it out with us → Strategy Session · Let us help build it → Services) with the visitor's chosen help level highlighted. No roadmap, no lead gate; emailing the result is optional. Copy lives in `QUESTIONS` / `RESULTS` / `ROUTES`, logic in `computeResult`. Answers persist in `sessionStorage`.
+### Find Your Next Step — the popup (`#assessModal`)
+Every `[data-next-step]` CTA (76 of them across the 11 pages: header, hero, sticky mobile bar, section CTAs, footer) opens one shared popup. The popup embeds **`SITE_CONFIG.links.nextStep`** in an iframe — currently `https://coachingcentral.exlyapp.com/?init_contact=true`, which opens Exly's "Get in touch" form.
+
+- The iframe is loaded **lazily, on first open** — never on page load, so it costs nothing until someone clicks.
+- A spinner covers the frame until the iframe's `load` event; after 12s it swaps to "…you can open it in a new tab instead".
+- An **Open in a new tab** link sits in the popup header (icon-only under 480px) as the escape hatch if Exly ever blocks framing or is slow.
+- Verified: `coachingcentral.exlyapp.com` sends no `X-Frame-Options` or CSP `frame-ancestors`, and no frame-busting script, so embedding works.
+- `dataLayer.push({event:'next_step_open', mode:'hosted'|'built-in'})` fires on open.
+
+**Fallback — the built-in check (`assets/js/assessment.js`).** Empty `links.nextStep` and the same popup shows the Draft 2 next-step check instead: four questions (where are you → biggest question → how clear are you → how much help) → one of three broad need states (*Get Clear*, *Get Moving*, *Get Growing*) → a short read, **one recommended next action**, and the three routes (Coaching Kits / Strategy Session / Services) with the visitor's help level highlighted. No roadmap, no lead gate; emailing the result is optional. Copy lives in `QUESTIONS` / `RESULTS` / `ROUTES`, logic in `computeResult`; answers persist in `sessionStorage`. The script exits early while a hosted URL is set, so nothing renders twice.
 
 ## Configuration (do this before go-live)
 
@@ -37,6 +45,9 @@ whatsapp: '918178501112',                                   // +91 81785 01112 �
 instagram: 'https://www.instagram.com/coachingcentralorg/',
 formEndpoint: '',       // URL that receives lead POSTs (JSON). Empty = stored in localStorage + console only
 links: {
+  // Find Your Next Step — opened in the popup's iframe by every [data-next-step] CTA.
+  // Empty it to fall back to the built-in next-step check.
+  nextStep: 'https://coachingcentral.exlyapp.com/?init_contact=true',
   launchKit: '',        // Exly checkout — Launch Kit (Phase 2: free starters + low-ticket kit)
   toolkit: '',          // Exly checkout — Goal-Setting Master Toolkit + walkthrough (bundled)
   goalSession: '',      // Exly booking — personal Goal-Setting Session (optional paid add-on)
@@ -52,7 +63,7 @@ links: {
 Nothing is broken while a value is empty: checkout/booking buttons open the interest modal instead. `Login` appears in the header, mobile menu, footer and the Community member area as soon as `links.login` is set.
 
 ### Lead capture
-Three forms share one handler (`CCLeads.submit`): the interest/contact modal, the optional "email me this result" form in the assessment, and the contact page. Each POSTs JSON to `formEndpoint` (`source`, `name`, `email`, `whatsapp`, plus `interest`/`message`, or the assessment answers + result). `dataLayer.push` events: `lead_submit`, `assessment_open`, `assessment_complete`.
+Three forms share one handler (`CCLeads.submit`): the interest/contact modal, the optional "email me this result" form in the built-in check, and the contact page. (Leads from the Find Your Next Step popup land in Exly, not here.) Each POSTs JSON to `formEndpoint` (`source`, `name`, `email`, `whatsapp`, plus `interest`/`message`, or the assessment answers + result). `dataLayer.push` events: `lead_submit`, `next_step_open`, `assessment_complete`.
 
 ## Content still needed from the client (Phase 2)
 

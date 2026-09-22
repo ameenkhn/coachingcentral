@@ -14,6 +14,11 @@
   var viewport = $('#quizViewport');
   if (!viewport) return;
 
+  // When a hosted next-step experience is configured (SITE_CONFIG.links.nextStep)
+  // the popup shows that in an iframe, and this built-in check stays dormant.
+  var cfg = window.SITE_CONFIG || {};
+  if (cfg.links && cfg.links.nextStep) return;
+
   var STORE_KEY = 'cc_assessment';
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 

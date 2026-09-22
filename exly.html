@@ -341,13 +341,32 @@
   </div>
 
   <!-- ======================================================================
-       Modal — Find Your Next Step (assessment: 4 questions → 3 outcomes)
-       Steps are rendered by assets/js/assessment.js
+       Modal — Find Your Next Step
+       Every [data-next-step] CTA opens this. It loads SITE_CONFIG.links.nextStep
+       in an iframe; if that link is emptied, the built-in next-step check
+       (assets/js/assessment.js) is shown instead.
        ====================================================================== -->
   <div class="modal modal--assess" id="assessModal" aria-hidden="true">
     <div class="modal__dialog modal__dialog--wide" role="dialog" aria-modal="true" aria-label="Find your next step">
       <button class="icon-btn modal__close" type="button" data-assess-close aria-label="Close"><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg></button>
-      <div class="quiz quiz--modal" id="quiz">
+
+      <!-- Hosted next-step experience -->
+      <div class="frame" id="nextStepFrame" hidden>
+        <div class="frame__head">
+          <p class="frame__title">Find Your Next Step</p>
+          <a class="frame__link" id="nextStepNewTab" href="#" target="_blank" rel="noopener" aria-label="Open Find Your Next Step in a new tab"><span class="frame__link-text">Open in a new tab</span> <svg class="ico" aria-hidden="true"><use href="#i-link"/></svg></a>
+        </div>
+        <div class="frame__body">
+          <div class="frame__status" id="nextStepStatus" role="status">
+            <span class="frame__spinner" aria-hidden="true"></span>
+            <p class="frame__status-text" id="nextStepStatusText">Loading your next step…</p>
+          </div>
+          <iframe class="frame__iframe" id="nextStepIframe" title="Find Your Next Step — Coaching Central" allow="clipboard-write; payment"></iframe>
+        </div>
+      </div>
+
+      <!-- Fallback: the built-in next-step check -->
+      <div class="quiz quiz--modal" id="quiz" hidden>
         <div class="quiz__top">
           <span class="quiz__count" id="quizCount" aria-live="polite">Question 1 of 4</span>
           <div class="quiz__progress" id="quizProgress" aria-hidden="true"><i class="is-current"></i><i></i><i></i><i></i></div>
