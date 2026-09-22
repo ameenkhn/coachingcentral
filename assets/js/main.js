@@ -1,7 +1,7 @@
 /* ==========================================================================
    Coaching Central — main.js
    Header · mobile menu · scroll reveals · hero parallax · questions scene ·
-   BUILD → ATTRACT → GROW cycle · sticky CTA · modal & lead forms · link routing
+   BUILD → ATTRACT → GROW cycle · sticky CTA · modals & lead forms · link routing
    ========================================================================== */
 (function () {
   'use strict';
@@ -19,47 +19,38 @@
     instagram: 'https://www.instagram.com/coachingcentralorg/',
     formEndpoint: '',             // POST target for lead forms (Exly / webhook / Formspree…)
     links: {
-      launchKit: '',              // Exly checkout URL — Coaching Business Launch Kit (not listed on Exly yet)
-      toolkit: '',                // Exly checkout URL — Goal-Setting Master Toolkit (not listed on Exly yet)
-      strategySession: '',        // Exly booking URL — 1:1 Business Strategy Session (not listed on Exly yet)
+      launchKit: '',              // Exly checkout URL — Coaching Business Launch Kit (Phase 2: free starters + low-ticket kit)
+      toolkit: '',                // Exly checkout URL — Goal-Setting Master Toolkit + 15-minute walkthrough (bundled)
+      goalSession: '',            // Exly booking URL — personal Goal-Setting Session (optional paid add-on to the toolkit)
+      strategySession: '',        // Exly booking URL — 1:1 Business Strategy Session (from ₹1,500)
       support: '',                // Ongoing Support enquiry / booking URL
-      implementation: '',         // Implementation Services enquiry URL
-      community: 'https://coachingcentral.exlyapp.com/f1cc3d14-f7c8-4c85-b5f1-fa5ae5567b79',   // Coaching Central Community — ₹199 lifetime
-      exlyOffer: '',              // Coaching Central × Exly — partner sign-up / offer URL for community members
+      implementation: '',         // Services (build it with us) enquiry URL
+      mentorship: '',             // Mentorship with Sushil Mehrotra — enquiry / booking URL
+      community: 'https://coachingcentral.exlyapp.com/f1cc3d14-f7c8-4c85-b5f1-fa5ae5567b79',   // Coaching Central Community — replace with the ₹299/year membership URL when listed
       login: 'https://coachingcentral.exlyapp.com/eud/login/email'
-    },
-    // Member-exclusive prices (Coaching Central Community). Shown wherever <span data-member-price="key">
-    // appears (community.html, workshops.html, product pages). Leave a value empty and the site shows
-    // "Member price shared inside the community" instead of inventing a number.
-    memberPrices: {
-      launchKit: '',              // e.g. '₹399'
-      toolkit: '',                // e.g. '₹399'
-      strategySession: '',        // e.g. 'From ₹1,200'
-      support: '',                // e.g. 'Member rate'
-      workshops: '',              // e.g. '20% off every workshop'
-      exly: ''                    // e.g. '3 months free on Exly' — the Coaching Central × Exly offer
-    },
-    memberPriceFallback: 'Member price shared inside the community'
+    }
   };
 
   var PRODUCT_NAMES = {
     launchKit: 'Coaching Business Launch Kit',
     toolkit: 'Goal-Setting Master Toolkit',
+    goalSession: 'Goal-Setting Session',
     strategySession: '1:1 Business Strategy Session',
     support: 'Ongoing Support',
     implementation: 'Implementation Services',
-    community: 'Coaching Central Community',
-    exlyOffer: 'Exly partner offer'
+    mentorship: 'Mentorship with Sushil Mehrotra',
+    community: 'Coaching Central Community'
   };
   // Where "Explore …" links go when no checkout URL is configured
   var PRODUCT_PAGES = {
     launchKit: 'launch-kit.html',
     toolkit: 'goal-setting-toolkit.html',
+    goalSession: 'goal-setting-toolkit.html#add-on',
     strategySession: 'strategy-session.html',
-    support: 'programs.html#ongoing-support',
-    implementation: 'support.html',
-    community: 'community.html',
-    exlyOffer: 'exly.html'
+    support: 'services.html#ongoing-support',
+    implementation: 'services.html#implementation',
+    mentorship: 'learn-grow.html#mentorship',
+    community: 'community.html'
   };
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -231,41 +222,57 @@
   }
 
   /* ------------------------------------------------------------------------
-     Sticky mobile CTA — shows after the hero, hides on the assessment & footer
+     Sticky mobile CTA — shows after the hero, hides on the footer
      ------------------------------------------------------------------------ */
   var sticky = $('#stickyCta');
   var hero = $('#top') || $('.page-hero');
-  var assess = $('#next-step');
   var footer = $('.footer');
   if (sticky && 'IntersectionObserver' in window) {
-    var heroVisible = true, assessVisible = false, footerVisible = false;
+    var heroVisible = true, footerVisible = false;
     var updateSticky = function () {
-      var show = !heroVisible && !assessVisible && !footerVisible && !menu.classList.contains('is-open');
+      var show = !heroVisible && !footerVisible && !menu.classList.contains('is-open');
       sticky.classList.toggle('is-visible', show);
       sticky.setAttribute('aria-hidden', String(!show));
       $('a', sticky).tabIndex = show ? 0 : -1;
     };
     if (hero) new IntersectionObserver(function (e) { heroVisible = e[0].isIntersecting; updateSticky(); }, { threshold: 0.15 }).observe(hero);
     else { heroVisible = false; updateSticky(); }
-    if (assess) new IntersectionObserver(function (e) { assessVisible = e[0].isIntersecting; updateSticky(); }, { threshold: 0.05 }).observe(assess);
     if (footer) new IntersectionObserver(function (e) { footerVisible = e[0].isIntersecting; updateSticky(); }, { threshold: 0.05 }).observe(footer);
   }
 
   /* ------------------------------------------------------------------------
-     Modal — one dialog, three intents: templates / product / contact
+     Modals — generic open/close + focus trap (lead modal, assessment modal)
      ------------------------------------------------------------------------ */
+  var openModals = [];
+  function showDialog(el) {
+    el.classList.add('is-open');
+    el.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('is-locked');
+    if (openModals.indexOf(el) === -1) openModals.push(el);
+  }
+  function hideDialog(el) {
+    el.classList.remove('is-open');
+    el.setAttribute('aria-hidden', 'true');
+    openModals = openModals.filter(function (m) { return m !== el; });
+    if (!openModals.length && !menu.classList.contains('is-open')) document.body.classList.remove('is-locked');
+  }
+  function trapFocus(el) {
+    el.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab') return;
+      var focusables = $$('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled])', el)
+        .filter(function (f) { return f.offsetParent !== null && f.getAttribute('aria-disabled') !== 'true'; });
+      if (!focusables.length) return;
+      var first = focusables[0], last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+  }
+
+  /* Lead-capture modal — two intents: product interest / contact */
   var modal = $('#modal');
   var modalForm = $('#modalForm');
   var lastFocus = null;
   var MODAL_COPY = {
-    templates: {
-      title: 'Where should we send the free templates?',
-      text: 'Five starter templates from the Coaching Business Launch Kit — straight to your inbox.',
-      submit: 'Send Me the Templates',
-      successTitle: 'Done — check your inbox.',
-      successText: 'Your templates are on their way. While you wait, take the two-minute next-step check.',
-      interest: false, message: false
-    },
     product: {
       title: 'Tell us what you’re interested in.',
       text: 'Leave your details and we’ll send you everything you need to get started — no pressure, no spam.',
@@ -285,7 +292,7 @@
   };
 
   function openModal(kind, presetInterest) {
-    var copy = MODAL_COPY[kind] || MODAL_COPY.contact;
+    var copy = MODAL_COPY[kind] || MODAL_COPY.product;
     lastFocus = document.activeElement;
     modal.classList.remove('is-success');
     modalForm.reset();
@@ -298,44 +305,64 @@
     $('#modalSource').value = kind;
     $('#mInterestField').hidden = !copy.interest;
     $('#mMessageField').hidden = !copy.message;
-    if (presetInterest) $('#mInterest').value = presetInterest;
-    modal.classList.add('is-open');
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.classList.add('is-locked');
+    if (presetInterest) {
+      var sel = $('#mInterest');
+      var match = $$('option', sel).some(function (o) { return o.value === presetInterest; });
+      sel.value = match ? presetInterest : 'Something else';
+    }
+    showDialog(modal);
     setTimeout(function () { $('#mName').focus(); }, 60);
   }
   function closeModal() {
-    modal.classList.remove('is-open');
-    modal.setAttribute('aria-hidden', 'true');
-    document.body.classList.remove('is-locked');
+    hideDialog(modal);
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
   window.CCModal = { open: openModal, close: closeModal };
+  trapFocus(modal);
+
+  /* Assessment modal — the quiz itself is rendered by assessment.js */
+  var assessModal = $('#assessModal');
+  var assessLastFocus = null;
+  function openAssess() {
+    if (!assessModal) return;
+    assessLastFocus = document.activeElement;
+    if (menu.classList.contains('is-open')) setMenu(false);
+    showDialog(assessModal);
+    if (window.dataLayer) window.dataLayer.push({ event: 'assessment_open' });
+    document.dispatchEvent(new CustomEvent('cc:assess-open'));
+  }
+  function closeAssess() {
+    if (!assessModal) return;
+    hideDialog(assessModal);
+    if (assessLastFocus && assessLastFocus.focus) assessLastFocus.focus();
+  }
+  window.CCAssessModal = { open: openAssess, close: closeAssess };
+  if (assessModal) trapFocus(assessModal);
 
   document.addEventListener('click', function (e) {
+    var next = e.target.closest('[data-next-step], a[href="#next-step"]');
+    if (next) { e.preventDefault(); if (modal.classList.contains('is-open')) closeModal(); openAssess(); return; }
     var opener = e.target.closest('[data-modal-open]');
-    if (opener) { e.preventDefault(); openModal(opener.getAttribute('data-modal-open')); return; }
+    if (opener) { e.preventDefault(); openModal(opener.getAttribute('data-modal-open'), opener.getAttribute('data-modal-interest')); return; }
     var closer = e.target.closest('[data-modal-close]');
     if (closer) { if (closer.getAttribute('href') === null) e.preventDefault(); closeModal(); return; }
+    var aCloser = e.target.closest('[data-assess-close]');
+    if (aCloser) { e.preventDefault(); closeAssess(); return; }
     if (e.target === modal) closeModal();
+    if (e.target === assessModal) closeAssess();
   });
   document.addEventListener('keydown', function (e) {
-    if (e.key !== 'Escape' || !modal.classList.contains('is-open')) return;
-    closeModal();
+    if (e.key !== 'Escape') return;
+    if (assessModal && assessModal.classList.contains('is-open')) { closeAssess(); return; }
+    if (modal.classList.contains('is-open')) closeModal();
   });
-  // simple focus trap
-  modal.addEventListener('keydown', function (e) {
-    if (e.key !== 'Tab') return;
-    var focusables = $$('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled])', modal)
-      .filter(function (el) { return el.offsetParent !== null; });
-    if (!focusables.length) return;
-    var first = focusables[0], last = focusables[focusables.length - 1];
-    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-  });
+  // Deep link: any page opened with #next-step starts the check straight away
+  if (location.hash === '#next-step') {
+    window.addEventListener('load', function () { setTimeout(openAssess, 200); });
+  }
 
   /* ------------------------------------------------------------------------
-     Lead submission (shared by modal + assessment)
+     Lead submission (shared by modal + assessment + contact page)
      ------------------------------------------------------------------------ */
   function validEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); }
 
@@ -409,13 +436,6 @@
     }
   });
 
-  // Member-exclusive prices (community) — filled from SITE_CONFIG.memberPrices
-  $$('[data-member-price]').forEach(function (el) {
-    var v = (SITE_CONFIG.memberPrices || {})[el.getAttribute('data-member-price')];
-    el.textContent = v || el.getAttribute('data-member-fallback') || SITE_CONFIG.memberPriceFallback;
-    el.classList.toggle('is-tba', !v);
-  });
-
   $$('[data-config-link]').forEach(function (a) {
     var key = a.getAttribute('data-config-link');
     var url = SITE_CONFIG.links[key] || SITE_CONFIG[key];
@@ -450,5 +470,5 @@
   var yearEl = $('#year'); if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
   // Close mobile menu when resizing to desktop
-  window.addEventListener('resize', function () { if (window.innerWidth >= 1100 && menu.classList.contains('is-open')) setMenu(false); });
+  window.addEventListener('resize', function () { if (window.innerWidth >= 1200 && menu.classList.contains('is-open')) setMenu(false); });
 })();

@@ -1213,3 +1213,177 @@ a.qs-card { color: var(--navy); }
 .offer-panel__steps b { display: block; font-family: var(--font-head); font-weight: 700; }
 .offer-panel__steps span { font-size: var(--fs-small); color: var(--slate-700); }
 .offer-panel .btn-row .btn { flex: 1 1 auto; }
+
+/* --------------------------------------------------------------------------
+   28. Draft 2 — assessment modal, homepage journey, Services journey,
+       coach stories, community band, Learn & Grow
+   -------------------------------------------------------------------------- */
+
+/* Hero now sits directly above the Questions block (quick-start panel removed) */
+.hero + .questions { margin-top: var(--bleed); }
+
+/* Questions → the assessment lives in a popup, so the closer invites it */
+.questions__closer {
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  padding-top: clamp(1.5rem, 3vw, 2.25rem);
+  border-top: 1px solid var(--white-a15);
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 1.5rem;
+  color: var(--white-a80); font-size: var(--fs-body);
+}
+.questions__closer::before { display: none; }
+.questions__closer p { max-width: 30rem; }
+.questions__closer strong { color: #fff; font-weight: 700; }
+
+/* Sticky CTA hides while any modal / the menu is open */
+body.is-locked .sticky-cta { transform: translateY(110%); pointer-events: none; }
+
+/* Assessment modal — reuses the quiz component inside a wider dialog */
+.modal__dialog--wide { width: min(100%, 46rem); padding: 0; gap: 0; }
+.modal__dialog--wide .modal__close { z-index: 2; background: var(--gray-100); }
+.modal__dialog--wide .modal__close:hover { background: var(--gray-200); }
+.quiz--modal { margin: 0; max-width: none; box-shadow: none; border-radius: var(--r-xl); }
+.quiz--modal .quiz__top { padding-top: 1.375rem; padding-right: 4.5rem; }
+.quiz--modal .quiz__step { padding-top: 1.25rem; }
+.quiz__lead { font-size: var(--fs-small); color: var(--slate-700); margin-top: -.5rem; }
+.result__action { display: grid; gap: .35rem; padding: 1.125rem 1.25rem; background: var(--teal-50); border-left: 3px solid var(--teal); border-radius: var(--r-md); }
+.result__action b { font-family: var(--font-head); font-weight: 800; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--teal-700); }
+.result__action p { font-weight: 600; color: var(--navy); line-height: 1.45; }
+.result__paths--3 { grid-template-columns: 1fr; }
+@media (min-width: 720px) { .result__paths--3 { grid-template-columns: repeat(3, 1fr); } }
+.result__paths--3 .path { padding: 1.125rem; }
+.result__paths--3 .path .btn { white-space: normal; text-align: left; }
+.result__send { display: grid; gap: .75rem; padding: 1.125rem 1.25rem; background: var(--gray-50); border-radius: var(--r-md); }
+.result__send-title { font-family: var(--font-head); font-weight: 700; font-size: var(--fs-small); }
+.result__send form { display: grid; gap: .625rem; }
+@media (min-width: 640px) { .result__send form { grid-template-columns: 1fr 1.2fr auto; align-items: start; } }
+.result__send .field input { min-height: 2.875rem; padding: .6rem .875rem; }
+.result__send .btn { min-height: 2.875rem; }
+.result__send .form-note { grid-column: 1 / -1; }
+.result__send.is-sent form { display: none; }
+.result__send .result__sent { display: none; align-items: center; gap: .6rem; font-size: var(--fs-small); color: var(--teal-700); font-weight: 600; }
+.result__send.is-sent .result__sent { display: flex; }
+.result__send .result__sent .ico { width: 1.125rem; height: 1.125rem; }
+
+/* Homepage — Build → Attract → Grow (interactive panel, moved here from About) */
+.method__intro { display: grid; gap: var(--s-6); align-items: end; }
+@media (min-width: 900px) { .method__intro { grid-template-columns: 7fr 5fr; gap: var(--s-16); } }
+.method__intro .lead { max-width: 30rem; }
+.method__intro .realisation__mark { margin-bottom: 0; }
+.method__stage-hint { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; font-size: var(--fs-small); color: var(--slate); }
+.method__stage-hint .ico { width: 1rem; height: 1rem; color: var(--teal-600); }
+
+/* Homepage — three ways in (reuses the category card) */
+.cats--3 { grid-template-columns: 1fr; }
+@media (min-width: 800px) { .cats--3 { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; } }
+.cat__kicker { font-family: var(--font-head); font-weight: 800; font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; color: var(--teal-700); }
+.cat__meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: .35rem .75rem; font-size: var(--fs-xs); color: var(--slate); margin-top: .25rem; }
+.cat__meta b { font-family: var(--font-head); font-weight: 800; font-size: 1rem; color: var(--navy); letter-spacing: -.01em; }
+.cat--orange .cat__kicker { color: var(--orange-700); }
+
+/* Homepage — the experience behind Coaching Central */
+.founders { display: flex; flex-wrap: wrap; gap: .875rem 1.75rem; }
+.founder { display: flex; align-items: center; gap: .75rem; }
+.founder .person__avatar { width: 3rem; height: 3rem; font-size: .9375rem; }
+.founder b { display: block; font-family: var(--font-head); font-weight: 800; font-size: 1rem; letter-spacing: -.01em; line-height: 1.2; }
+.founder div span { font-size: var(--fs-xs); color: var(--slate); }
+.experience__stats { display: flex; flex-wrap: wrap; gap: 1.25rem 2.5rem; }
+
+/* Homepage — coach stories (Before → Journey → Now) + testimonial layer */
+.stories { display: grid; gap: 1.25rem; }
+@media (min-width: 900px) { .stories { grid-template-columns: 1fr 1fr; gap: 1.5rem; } }
+.story { display: grid; gap: 1.25rem; align-content: start; padding: clamp(1.5rem, 3vw, 2.25rem); background: #fff; border-radius: var(--r-xl); box-shadow: var(--shadow-sm); transition: transform .3s var(--ease-expo), box-shadow .3s var(--ease); }
+.story:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.story__head { display: flex; align-items: center; gap: 1rem; }
+.story__head .person__avatar { width: 3.5rem; height: 3.5rem; font-size: 1.05rem; flex: none; }
+.story__name { font-family: var(--font-head); font-weight: 800; font-size: 1.25rem; letter-spacing: -.02em; line-height: 1.15; }
+.story__biz { font-family: var(--font-head); font-weight: 700; font-size: var(--fs-small); color: var(--teal-700); }
+.story__arc { display: grid; gap: .625rem; }
+.story__step { display: grid; grid-template-columns: 5.25rem 1fr; gap: .75rem; align-items: start; padding: .875rem 1rem; background: var(--gray-50); border-radius: var(--r-md); }
+.story__step b { font-family: var(--font-head); font-weight: 800; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--teal-700); padding-top: .25rem; }
+.story__step span { font-size: var(--fs-small); color: var(--slate-700); line-height: 1.5; }
+.story__step.is-placeholder { background: transparent; border: 1px dashed var(--gray-300); }
+.story__step.is-placeholder span { color: var(--slate); font-style: italic; }
+@media (max-width: 480px) { .story__step { grid-template-columns: 1fr; gap: .25rem; } }
+.quotes { margin-top: 1.5rem; display: grid; gap: 1rem; }
+@media (min-width: 800px) { .quotes { grid-template-columns: repeat(3, 1fr); } }
+.quote { display: grid; gap: .75rem; align-content: start; padding: 1.5rem; background: #fff; border-radius: var(--r-lg); box-shadow: var(--shadow-sm); }
+.quote.is-placeholder { background: transparent; box-shadow: none; border: 1px dashed var(--gray-300); }
+.quote__mark { width: 2.25rem; height: 2.25rem; border-radius: .75rem; display: grid; place-items: center; background: var(--teal-50); color: var(--teal-700); }
+.quote__mark .ico { width: 1.2rem; height: 1.2rem; }
+.quote__text { font-size: var(--fs-small); color: var(--slate-700); line-height: 1.55; }
+.quote.is-placeholder .quote__text { color: var(--slate); font-style: italic; }
+.quote__who { font-family: var(--font-head); font-weight: 700; font-size: var(--fs-xs); color: var(--navy); }
+.chip--pending { background: transparent; border: 1px dashed var(--gray-300); color: var(--slate); }
+
+/* Community band (homepage, Learn & Grow, Kits) */
+.community-banner__list { display: flex; flex-wrap: wrap; gap: .35rem 0; margin-top: 1rem; }
+.community-banner__list li { display: inline-flex; align-items: center; gap: .45rem; font-size: var(--fs-small); font-weight: 600; color: #fff; }
+.community-banner__list li + li::before { content: "·"; color: var(--white-a60); margin: 0 .75rem; font-weight: 400; }
+.community-banner__list .ico { width: 1rem; height: 1rem; color: var(--teal); }
+.community-banner__sub { font-size: var(--fs-xs); color: var(--white-a60); }
+.community-banner__cta .btn-row { justify-content: inherit; }
+.community-banner .link-arrow { color: var(--teal); font-size: var(--fs-small); }
+.price--year small { margin-left: .15rem; }
+
+/* Services — the journey: Build → Attract → Grow with capabilities per stage */
+.journey { display: grid; gap: 1.25rem; }
+.jstage { display: grid; gap: 1.5rem; padding: clamp(1.5rem, 3vw, 2.5rem); background: #fff; border-radius: var(--r-2xl); box-shadow: var(--shadow-sm); }
+@media (min-width: 960px) { .jstage { grid-template-columns: 5fr 7fr; gap: 3rem; } }
+.jstage__head { display: grid; gap: .875rem; align-content: start; }
+@media (min-width: 960px) { .jstage__head { position: sticky; top: calc(var(--header-h) + 2rem); } }
+.jstage__num { font-family: var(--font-head); font-weight: 800; font-size: .8125rem; letter-spacing: .14em; text-transform: uppercase; color: var(--teal-700); }
+.jstage__title { font-family: var(--font-head); font-weight: 800; font-size: clamp(2rem, 1.4rem + 2.4vw, 3.25rem); letter-spacing: -.035em; line-height: 1; }
+.jstage__tag { display: block; font-family: var(--font-body); font-weight: 500; font-size: var(--fs-lead); letter-spacing: 0; color: var(--slate-700); margin-top: .5rem; line-height: 1.4; }
+.jstage__chain { font-family: var(--font-head); font-weight: 700; font-size: var(--fs-small); letter-spacing: .01em; color: var(--teal-700); line-height: 1.6; }
+.jstage__desc { color: var(--slate-700); max-width: 28rem; }
+.jstage__caps { display: grid; gap: .875rem; align-content: start; }
+@media (min-width: 640px) { .jstage__caps { grid-template-columns: 1fr 1fr; } }
+.jstage__caps .feature { background: var(--gray-50); box-shadow: none; }
+.jstage--grow .jstage__num, .jstage--grow .feature__icon { color: var(--orange-700); }
+.jstage--grow .feature__icon { background: var(--orange-50); }
+.jstage--grow .jstage__chain { color: var(--orange-700); }
+.journey__repeat { margin-top: var(--s-10); display: grid; gap: .75rem; justify-items: center; text-align: center; }
+
+/* Learn & Grow — tracks */
+.track-head { display: grid; gap: .5rem; margin-bottom: var(--s-8); }
+.track-head .h3 { font-weight: 800; letter-spacing: -.025em; }
+.offer__body .link-arrow { font-size: var(--fs-small); }
+.mentor { display: grid; gap: 1.5rem; padding: clamp(1.5rem, 3vw, 2.5rem); background: var(--navy); color: #fff; border-radius: var(--r-2xl); position: relative; overflow: clip; isolation: isolate; }
+.mentor::before { content: ""; position: absolute; inset: auto -15% -45% auto; width: 55%; aspect-ratio: 1; border-radius: 50%; z-index: -1; background: radial-gradient(circle, rgba(20, 184, 166, .3), rgba(20, 184, 166, 0) 70%); }
+@media (min-width: 900px) { .mentor { grid-template-columns: auto 1fr; gap: 2.5rem; align-items: start; } }
+.mentor__avatar { width: 6rem; height: 6rem; font-size: 1.75rem; }
+.mentor__body { display: grid; gap: 1rem; }
+.mentor__title { font-family: var(--font-head); font-weight: 800; font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.125rem); letter-spacing: -.03em; line-height: 1.1; color: #fff; }
+.mentor__text { color: var(--white-a80); max-width: 42rem; }
+.mentor__formats { display: grid; gap: .75rem; }
+@media (min-width: 640px) { .mentor__formats { grid-template-columns: 1fr 1fr; } }
+.mentor__format { display: grid; gap: .35rem; padding: 1.125rem 1.25rem; background: var(--white-a10); border: 1px solid var(--white-a10); border-radius: var(--r-lg); }
+.mentor__format b { font-family: var(--font-head); font-weight: 800; font-size: 1rem; color: #fff; }
+.mentor__format span { font-size: var(--fs-small); color: var(--white-a80); }
+
+/* Kits catalogue — bigger cards, tiers */
+.product-card--lg .product-card__title { font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem); }
+.product-card__who { font-size: var(--fs-xs); color: var(--slate); }
+.tiers { display: grid; gap: .75rem; }
+@media (min-width: 640px) { .tiers { grid-template-columns: 1fr 1fr; } }
+.tier { display: grid; gap: .5rem; align-content: start; padding: 1.25rem; background: #fff; border-radius: var(--r-lg); border: 1.5px solid var(--gray-200); }
+.tier.is-featured { border-color: var(--teal); background: var(--teal-50); }
+.tier__label { font-family: var(--font-head); font-weight: 800; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--teal-700); }
+.tier__name { font-family: var(--font-head); font-weight: 800; font-size: 1.125rem; letter-spacing: -.015em; }
+.tier__desc { font-size: var(--fs-small); color: var(--slate-700); }
+.tier .price { font-size: 1.25rem; margin-top: .25rem; }
+.tier .btn { justify-self: start; margin-top: .5rem; }
+
+/* Member area (community) */
+.member-area { display: grid; gap: 1rem; align-content: start; padding: clamp(1.5rem, 3vw, 2.5rem); background: #fff; border-radius: var(--r-xl); border: 1px solid var(--gray-200); box-shadow: var(--shadow-sm); }
+.member-area__icon { width: 2.75rem; height: 2.75rem; border-radius: .875rem; display: grid; place-items: center; background: var(--teal-50); color: var(--teal-700); }
+.member-area__icon .ico { width: 1.3rem; height: 1.3rem; }
+
+.result__title:focus, .result__sent:focus { outline: none; }
+.duo__card > .chip, .member-area > .chip { justify-self: start; }
+@media (max-width: 560px) {
+  .story__head { flex-wrap: wrap; }
+  .story__head .chip { margin-left: 0 !important; flex-basis: 100%; width: fit-content; }
+  .community-banner__list { flex-direction: column; gap: .5rem; }
+  .community-banner__list li + li::before { display: none; }
+}
